@@ -1,0 +1,209 @@
+
+<!-- Made with <3 by Volbil -->
+<html>
+	<head>
+
+		<title>Час до хардфорку Karbo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+    	<header name = "Access-Control-Allow-Origin" value = "*" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<link rel="shortcut icon" href="https://karbo.io/images/favicon.ico?3">
+		<link rel="icon" type="image/icon" href="https://karbo.io/images/favicon.ico?3">
+		<meta property="og:image" content="https://karbo.io/promo/krb-wallpaper-3440x1440.jpg?3">
+		<meta property="og:description" content="Час до хардфорку Karbo"/>
+		
+		<script>
+			// Confeti.js
+			window.ConfettiGenerator=function(e){function t(e,t){e||(e=1);var i=Math.random()*e;return t?Math.floor(i):i}function i(){return{prop:a.props[t(a.props.length,!0)],x:t(a.width),y:t(a.height),radius:t(4)+1,line:Math.floor(t(65)-30),angles:[t(10,!0)+2,t(10,!0)+2,t(10,!0)+2,t(10,!0)+2],color:a.colors[t(a.colors.length,!0)],rotation:t(360,!0)*Math.PI/180,speed:t(a.clock/7)+a.clock/30}}function r(e){var t=e.radius<=3?.4:.8;switch(n.fillStyle=n.strokeStyle="rgba("+e.color+", "+t+")",n.beginPath(),e.prop){case"circle":n.moveTo(e.x,e.y),n.arc(e.x,e.y,e.radius*a.size,0,2*Math.PI,!0),n.fill();break;case"triangle":n.moveTo(e.x,e.y),n.lineTo(e.x+e.angles[0]*a.size,e.y+e.angles[1]*a.size),n.lineTo(e.x+e.angles[2]*a.size,e.y+e.angles[3]*a.size),n.closePath(),n.fill();break;case"line":n.moveTo(e.x,e.y),n.lineTo(e.x+e.line*a.size,e.y+5*e.radius),n.lineWidth=2*a.size,n.stroke();break;case"square":n.save(),n.translate(e.x+15,e.y+5),n.rotate(e.rotation),n.fillRect(-15*a.size,-5*a.size,15*a.size,5*a.size),n.restore()}}var a={target:"confetti-holder",max:80,size:1,animate:!0,props:["circle","square","triangle","line"],colors:[[165,104,246],[230,61,135],[0,199,228],[253,214,126]],clock:25,interval:null,width:window.innerWidth,height:window.innerHeight};e&&(e.target&&(a.target=e.target),e.max&&(a.max=e.max),e.size&&(a.size=e.size),void 0!==e.animate&&null!==e.animate&&(a.animate=e.animate),e.props&&(a.props=e.props),e.colors&&(a.colors=e.colors),e.clock&&(a.clock=e.clock),e.width&&(a.width=e.width),e.height&&(a.height=e.height));var o=document.getElementById(a.target),n=o.getContext("2d"),l=[];return{render:function(){function e(){n.clearRect(0,0,a.width,a.height);for(var e in l)r(l[e]);s()}function s(){for(var e=0;e<a.max;e++){var i=l[e];a.animate&&(i.y+=i.speed),i.y>a.height&&(l[e]=i,l[e].x=t(a.width,!0),l[e].y=-10)}}o.width=a.width,o.height=a.height,l=[];for(var c=0;c<a.max;c++)l.push(i());return a.animate?a.interval=setInterval(e,20):e()},clear:function(){n.clearRect(0,0,o.width,o.height);var e=o.width;o.width=1,o.width=e,clearInterval(a.interval)}}};
+		</script>
+
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+			    font-family: 'Open Sans', Arial, Helvetica, "Microsoft YaHei New", "Microsoft Yahei", "微软雅黑", 宋体, SimSun, STXihei, "华文细黑", sans-serif;
+			    background: #FFF;
+			    height: 100%;
+			    margin: 0;
+			    padding: 0;
+			    color: #15315e;
+			}
+			h1 {
+				margin: 0;
+				margin-bottom: 10px;
+				font-weight: 600;
+			}
+			.wrapper {
+				display: flex;
+				height: 100%;
+				justify-content: center;
+				align-items: center;
+			}
+			.center {
+				text-align: center;
+			}
+			#my-canvas {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				right: 0;
+				left: 0;
+			}
+		</style>
+
+		<script>
+
+			var hfHeight = 266000;
+			var hfFinished = false;
+			var api = 'http://108.61.198.115:32348';
+			var blockTargetInterval = 240;
+			var coinUnits = 1000000000000;
+			var xhrGetBlocks;
+			var lastStats;
+			var block,
+				Difficulties = [],
+				Blocks = [],
+				Rewards = [],
+				Txses = [],
+				Sizes = [],
+				Timestamps = [],
+				diffChart;
+
+			function endHf() {
+				if (!hfFinished) {
+					$(".info").hide();
+	            	$("h1").html("Хардфорк відбувся!");
+	            	var confettiSettings = { target: 'my-canvas' };
+				    var confetti = new ConfettiGenerator(confettiSettings);
+				    confetti.render();
+				    hfFinished = true;
+				}
+			}
+
+			function declOfNum(n, titles) {
+			    return titles[(n % 10 === 1 && n % 100 !== 11) ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2]
+			}
+
+		    function getBlockRowElement(block, jsonString){
+		    	var dateTime = new Date(block.timestamp * 1000).toISOString();
+				Difficulties.push(parseInt(block.difficulty));
+				Blocks.push(parseInt(block.height));
+				Txses.push(parseInt(block.tx_count));
+				Sizes.push(parseInt(block.cumul_size));
+				Timestamps.push(dateTime);		
+		    }
+
+		    function displayTime() {
+		    	$.ajax({
+		            url: api + '/getinfo',
+		            dataType: 'json',
+					type: 'GET',
+		            cache: 'false'
+		        }).done(function(data, success){
+		            lastStats = data;
+		            renderInitialBlocks(lastStats);
+		        });
+		    }
+			
+			function renderInitialBlocks(lastStats) {
+		        if (xhrGetBlocks) xhrGetBlocks.abort();
+				
+				var loadHeight;
+				loadHeight = lastStats.last_known_block_index;
+				
+				xhrGetBlocks = $.ajax({
+					url: api + '/json_rpc',
+					method: "POST",
+					data: JSON.stringify({
+						jsonrpc:"2.0",
+						id: "test",
+						method:"f_blocks_list_json",
+						params: {
+							height: loadHeight
+						}
+					}),
+					dataType: 'json',
+					cache: 'false',
+					success: function(data){
+						renderBlocks(data.result.blocks, lastStats.last_known_block_index);
+					}
+				});
+		    };
+
+	    	function renderBlocks(blocksResults, height) {
+
+		        for (var i = 0; i < blocksResults.length; i ++){
+		            var block = blocksResults[i];
+		            var blockJson = JSON.stringify(block);
+		            var existingRow = document.getElementById('blockRow' + block.height);
+		            getBlockRowElement(block, blockJson);
+		        }
+
+		        calcAvgHashRate(height);
+		    }
+
+			function calcAvgHashRate(height) {
+				var sum = Difficulties.reduce(add, 0);
+				function add(a, b) {
+					return a + b;
+				}
+				var avgDiff = Math.round(sum / Difficulties.length);
+				var avgHashRate = avgDiff / blockTargetInterval;
+				var avgMinutes = Math.ceil((lastStats.difficulty / avgHashRate) / 60);
+
+				if (height <= hfHeight) {
+					var minutes = ((hfHeight - height) * avgMinutes);
+					var hours = Math.floor(minutes / 60);
+					var days = Math.floor(hours / 24);
+					if (hours < 24) {
+						if (minutes < 60) {
+							$("#time").text(minutes);
+				  			$("#time-text").text(declOfNum(hours, ['хвилина','хвилини','хвилин']));
+						} else {
+							$("#time").text(hours);
+				  			$("#time-text").text(declOfNum(hours, ['година','години','годин']));
+						}
+					} else {
+						$("#time").text(days);
+				  		$("#time-text").text(declOfNum(days, ['день','днів','днів']));
+					}
+					
+			  		
+			  		$("#bl-text").text(declOfNum(hfHeight - height, ['блок','блоки','блоків']));
+			  		$("#height").text(height);
+			  		$("#blocks").text(hfHeight - height);
+				} else {
+					endHf();
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+		<canvas id="my-canvas"></canvas>
+		<div class="wrapper">
+			<div class="center">
+				<h1>До хардфорку залишилось ~ <b id="time">0</b> <span id="time-text">годин</span> / <b id="blocks">0</b> <span id="bl-text">блоків</span></h1>
+				<span class="info">Поточна висота <b id="height">0</b></span></span>
+			</div>
+		</div>
+	</body>
+
+	<script>
+		displayTime();
+		$.ajax({
+            url: api + '/getinfo',
+            dataType: 'json',
+			type: 'GET',
+            cache: 'false'
+        }).done(function(data, success) {
+            if (data.last_known_block_index < hfHeight) {
+            	setInterval(function() { displayTime() }, 3000);
+            }
+        });
+	</script>
+
+</html>
