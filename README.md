@@ -1,2 +1,2 @@
-# karbo-hardfork-countdown
-Countdown to Karbo hardfork
+# Countdown to Karbo hardfork
+Made with <3 by Volbil
