@@ -1,9 +1,8 @@
-
 <!-- Made with <3 by Volbil -->
 <html>
 	<head>
 
-		<title>Час до хардфорку Karbo</title>
+		<title>Time to Karbo hardfork</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
 		<meta http-equiv="Access-Control-Allow-Origin" content="*">
@@ -12,7 +11,7 @@
 		<link rel="shortcut icon" href="https://karbo.io/images/favicon.ico?3">
 		<link rel="icon" type="image/icon" href="https://karbo.io/images/favicon.ico?3">
 		<meta property="og:image" content="https://karbo.io/promo/krb-wallpaper-3440x1440.jpg?3">
-		<meta property="og:description" content="Час до хардфорку Karbo"/>
+		<meta property="og:description" content="Time to Karbo hardfork"/>
 		
 		<script>
 			// Confeti.js
@@ -55,6 +54,37 @@
 		</style>
 
 		<script>
+			var userLang = navigator.language || navigator.userLanguage;
+			var langList = ["uk","ru","be"];
+			var code = "en";
+			var lang = {
+				"uk": {
+					"done": "Хардфорк відбувся!",
+					"time-left": "До хардфорку залишилось",
+					"current-height": "Поточна висота",
+					"minutes": ['хвилина','хвилини','хвилин'],
+					"hours": ['година','години','годин'],
+					"days": ['день','днів','днів'],
+					"blocks": ['блок','блоки','блоків'],
+					"title": "Час до хардфорку Karbo"
+				},
+				"en": {
+					"done": "We successfully hardforked!",
+					"time-left": "Time left to hardfork",
+					"current-height": "Current height",
+					"minutes": ['minute','minutes','minutes'],
+					"hours": ['hour','hours','hours'],
+					"days": ['day','days','days'],
+					"blocks": ['block','blocks','blocks'],
+					"title": "Time to Karbo hardfork"
+				}
+			}
+
+			langList.forEach((langCode) => {
+			    if (userLang.includes(langCode)) {
+			    	code = "uk";
+			    }
+			});
 
 			var hfHeight = 266000;
 			var hfFinished = false;
@@ -75,7 +105,7 @@
 			function endHf() {
 				if (!hfFinished) {
 					$(".info").hide();
-	            	$("h1").html("Хардфорк відбувся!");
+	            	$("h1").html(lang[code]);
 	            	var confettiSettings = { target: 'my-canvas' };
 				    var confetti = new ConfettiGenerator(confettiSettings);
 				    confetti.render();
@@ -161,20 +191,24 @@
 					if (hours < 24) {
 						if (minutes < 60) {
 							$("#time").text(minutes);
-				  			$("#time-text").text(declOfNum(hours, ['хвилина','хвилини','хвилин']));
+				  			$("#time-text").text(declOfNum(hours, lang[code]["minutes"]));
 						} else {
 							$("#time").text(hours);
-				  			$("#time-text").text(declOfNum(hours, ['година','години','годин']));
+				  			$("#time-text").text(declOfNum(hours, lang[code]["hours"]));
 						}
 					} else {
 						$("#time").text(days);
-				  		$("#time-text").text(declOfNum(days, ['день','днів','днів']));
+				  		$("#time-text").text(declOfNum(days, lang[code]["days"]));
 					}
 					
 			  		
-			  		$("#bl-text").text(declOfNum(hfHeight - height, ['блок','блоки','блоків']));
+			  		$("#bl-text").text(declOfNum(hfHeight - height, lang[code]["blocks"]));
 			  		$("#height").text(height);
 			  		$("#blocks").text(hfHeight - height);
+			  		$("#time-left").text(lang[code]["time-left"]);
+			  		$("#current-height").text(lang[code]["current-height"]);
+					$('meta[property=og\\:description]').attr('content', lang[code]["title"]);
+					document.title = lang[code]["title"];
 				} else {
 					endHf();
 				}
@@ -186,8 +220,17 @@
 		<canvas id="my-canvas"></canvas>
 		<div class="wrapper">
 			<div class="center">
-				<h1>До хардфорку залишилось ~ <b id="time">0</b> <span id="time-text">годин</span> / <b id="blocks">0</b> <span id="bl-text">блоків</span></h1>
-				<span class="info">Поточна висота <b id="height">0</b></span></span>
+				<h1>
+					<span id="time-left"></span> ~ 
+					<b id="time">0</b> <span id="time-text"></span> / <b id="blocks">0</b>
+					<span id="bl-text"></span>
+				</h1>
+				<div class="info">
+					<span id="current-height">
+						
+					</span>
+					<b id="height">0</b></span>
+				</div>
 			</div>
 		</div>
 	</body>
