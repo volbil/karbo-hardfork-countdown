@@ -105,7 +105,7 @@
 			function endHf() {
 				if (!hfFinished) {
 					$(".info").hide();
-	            	$("h1").html(lang[code]);
+	            	$("h1").html(lang[code]["done"]);
 	            	var confettiSettings = { target: 'my-canvas' };
 				    var confetti = new ConfettiGenerator(confettiSettings);
 				    confetti.render();
